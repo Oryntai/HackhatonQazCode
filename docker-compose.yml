@@ -1,0 +1,36 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: qazcode-app
+    ports:
+      - "8080:8080"
+    environment:
+      INDEX_DIR: /app/index
+      ENABLE_CASE_MEMORY: "false"
+      CASE_MEMORY_DIRS: /app/data/case_memory
+      LOG_LEVEL: INFO
+    volumes:
+      - ./index:/app/index:ro
+      - ./data/case_memory:/app/data/case_memory:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  index-builder:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: qazcode-index-builder
+    profiles: ["tools"]
+    command: ["python", "build_index.py", "--source", "/app/data/corpus.zip", "--index-dir", "/app/index"]
+    environment:
+      INDEX_DIR: /app/index
+    volumes:
+      - ./data:/app/data
+      - ./index:/app/index

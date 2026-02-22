@@ -42,7 +42,7 @@ async def evaluate_single(
 ) -> EvaluationResult:
     """Evaluate a single protocol against the endpoint."""
     async with semaphore:
-        with open(json_file, "r") as f:
+        with open(json_file, "r", encoding="utf-8") as f:
             data = json.load(f)
 
         protocol_id = data["protocol_id"]
@@ -190,7 +190,7 @@ def compute_metrics(results: list[EvaluationResult]) -> dict:
 
 def write_jsonl(results: list[EvaluationResult], output_path: Path):
     """Write results to JSONL file."""
-    with open(output_path, "w") as f:
+    with open(output_path, "w", encoding="utf-8") as f:
         for r in results:
             line = {
                 "protocol_id": r.protocol_id,
@@ -213,7 +213,7 @@ def write_metrics_json(submission_name: str, metrics: dict, output_path: Path):
         "submission_name": submission_name,
         **metrics,
     }
-    with open(output_path, "w") as f:
+    with open(output_path, "w", encoding="utf-8") as f:
         json.dump(output_data, f, indent=2)
 
 
@@ -268,7 +268,7 @@ def display_summary(
     console.print()
 
     success_text = Text()
-    success_text.append("✓ ", style="bold green")
+    success_text.append("OK ", style="bold green")
     success_text.append("Results saved to:\n", style="white")
     success_text.append(f"  JSONL:   {output_jsonl}\n", style="bold cyan")
     success_text.append(f"  Metrics: {output_json}", style="bold cyan")

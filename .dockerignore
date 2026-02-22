@@ -1,6 +1,7 @@
 .git
 .gitignore
 .venv
+.venv-1
 .env
 .env.*
 __pycache__
@@ -16,3 +17,5 @@ build
 *.md
 notebooks/
 data/
+index/
+frontend/node_modules/
